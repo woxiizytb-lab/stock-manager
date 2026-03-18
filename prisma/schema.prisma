@@ -1,0 +1,42 @@
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Category {
+  id       Int       @id @default(autoincrement())
+  name     String
+  products Product[]
+}
+
+model Product {
+  id                    Int             @id @default(autoincrement())
+  referenceName         String
+  defaultPurchasePrice  Float
+  categoryId            Int
+  category              Category        @relation(fields: [categoryId], references: [id])
+  stockMovements        StockMovement[]
+}
+
+model Client {
+  id             Int             @id @default(autoincrement())
+  name           String
+  stockMovements StockMovement[]
+}
+
+model StockMovement {
+  id             Int      @id @default(autoincrement())
+  productId      Int
+  product        Product  @relation(fields: [productId], references: [id])
+  quantityChange Int      // Positive for IN, Negative for OUT
+  type           String   // "IN" or "OUT"
+  date           DateTime @default(now())
+  clientId       Int?
+  client         Client?  @relation(fields: [clientId], references: [id])
+  assignmentType String?  // "ACHAT" or "LOCATION_INTERNE" for OUT movements
+}
