@@ -41,5 +41,5 @@ EXPOSE 3000
 ENV PORT 3000
 ENV HOSTNAME "0.0.0.0"
 
-# Start the application by running Prisma deploy to create tables if missing, then node server.js
-CMD npx prisma migrate deploy && node server.js
+# Start the application by running Prisma db push to create tables if missing, then node server.js
+CMD npx prisma db push --accept-data-loss && node server.js
